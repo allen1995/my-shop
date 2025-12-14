@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- #ifdef H5 -->
+    <script>
+      // 仅在 H5 环境中执行，小程序环境不支持 document API
+      if (typeof document !== 'undefined' && typeof document.write === 'function') {
+        var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
+          CSS.supports('top: constant(a)'))
+        document.write(
+          '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
+          (coverSupport ? ', viewport-fit=cover' : '') + '" />')
+      }
+    </script>
+    <!-- #endif -->
+    <!-- #ifndef H5 -->
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <!-- #endif -->
+    <title></title>
+    <!--preload-links-->
+    <!--app-context-->
+  </head>
+  <body>
+    <div id="app"><!--app-html--></div>
+    <!-- #ifdef H5 -->
+    <script type="module" src="/main.js"></script>
+    <!-- #endif -->
+  </body>
+</html>

@@ -1,0 +1,107 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.generate-container.data-v-8f08f792 {
+  padding: 40rpx;
+  min-height: 100vh;
+  background-color: #F8F8F8;
+}
+.input-section.data-v-8f08f792 {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+.input-section .prompt-input.data-v-8f08f792 {
+  width: 100%;
+  min-height: 300rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: #333333;
+}
+.input-section .char-count.data-v-8f08f792 {
+  display: block;
+  text-align: right;
+  font-size: 24rpx;
+  color: #999999;
+  margin-top: 20rpx;
+}
+.params-section.data-v-8f08f792 {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+.params-section .param-item.data-v-8f08f792 {
+  margin-bottom: 40rpx;
+}
+.params-section .param-item.data-v-8f08f792:last-child {
+  margin-bottom: 0;
+}
+.params-section .param-item .param-label.data-v-8f08f792 {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20rpx;
+}
+.params-section .param-item .param-options.data-v-8f08f792 {
+  display: flex;
+  gap: 20rpx;
+  flex-wrap: wrap;
+}
+.params-section .param-item .param-options .param-option.data-v-8f08f792 {
+  padding: 20rpx 40rpx;
+  background: #F5F5F5;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  color: #666666;
+}
+.params-section .param-item .param-options .param-option.active.data-v-8f08f792 {
+  background: #007AFF;
+  color: #ffffff;
+}
+.action-section.data-v-8f08f792 {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30rpx 40rpx;
+  background: #ffffff;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+.action-section .generate-btn.data-v-8f08f792 {
+  width: 100%;
+  height: 88rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+}
+.action-section .generate-btn[disabled].data-v-8f08f792 {
+  background: #CCCCCC;
+}

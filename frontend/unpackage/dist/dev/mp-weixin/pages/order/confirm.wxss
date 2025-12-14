@@ -1,0 +1,155 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.confirm-container.data-v-324e7894 {
+  min-height: 100vh;
+  background-color: #F8F8F8;
+  padding-bottom: 120rpx;
+}
+.order-items-section.data-v-324e7894,
+.address-section.data-v-324e7894,
+.price-section.data-v-324e7894 {
+  background: #ffffff;
+  margin-bottom: 20rpx;
+  padding: 40rpx;
+}
+.order-items-section .section-title.data-v-324e7894,
+.address-section .section-title.data-v-324e7894,
+.price-section .section-title.data-v-324e7894 {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 30rpx;
+}
+.order-item.data-v-324e7894 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+.order-item.data-v-324e7894:last-child {
+  margin-bottom: 0;
+}
+.order-item .item-image.data-v-324e7894 {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 10rpx;
+  margin-right: 20rpx;
+}
+.order-item .item-info.data-v-324e7894 {
+  flex: 1;
+}
+.order-item .item-info .item-title.data-v-324e7894 {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 10rpx;
+}
+.order-item .item-info .item-spec.data-v-324e7894 {
+  display: block;
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 10rpx;
+}
+.order-item .item-info .item-price.data-v-324e7894 {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #FF3B30;
+}
+.address-card.data-v-324e7894 {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  background: #F5F5F5;
+  border-radius: 10rpx;
+}
+.address-card .address-text.data-v-324e7894,
+.address-card .address-placeholder.data-v-324e7894 {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+}
+.address-card .address-placeholder.data-v-324e7894 {
+  color: #999999;
+}
+.address-card .address-arrow.data-v-324e7894 {
+  font-size: 32rpx;
+  color: #999999;
+}
+.price-row.data-v-324e7894 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.price-row.data-v-324e7894:last-child {
+  margin-bottom: 0;
+}
+.price-row .price-label.data-v-324e7894 {
+  font-size: 28rpx;
+  color: #666666;
+}
+.price-row .price-value.data-v-324e7894 {
+  font-size: 28rpx;
+  color: #333333;
+}
+.price-row.total-row.data-v-324e7894 {
+  padding-top: 20rpx;
+  border-top: 2rpx solid #E5E5E5;
+}
+.price-row.total-row .price-label.data-v-324e7894 {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+.price-row.total-row .price-value.data-v-324e7894 {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #FF3B30;
+}
+.action-section.data-v-324e7894 {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30rpx 40rpx;
+  background: #ffffff;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+.action-section .submit-btn.data-v-324e7894 {
+  width: 100%;
+  height: 88rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+}
+.action-section .submit-btn[disabled].data-v-324e7894 {
+  background: #CCCCCC;
+}
