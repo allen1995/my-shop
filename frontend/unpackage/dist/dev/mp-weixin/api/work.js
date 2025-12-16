@@ -30,6 +30,44 @@ const workApi = {
       url: `/works/${workId}`,
       method: "DELETE"
     });
+  },
+  // 更新作品分类
+  updateCategory(workId, category) {
+    return utils_request.request({
+      url: `/works/${workId}/category`,
+      method: "PUT",
+      data: { category }
+    });
+  },
+  // 更新作品标签
+  updateTags(workId, tags) {
+    return utils_request.request({
+      url: `/works/${workId}/tags`,
+      method: "PUT",
+      data: { tags }
+    });
+  },
+  // 添加标签
+  addTag(workId, tag) {
+    return utils_request.request({
+      url: `/works/${workId}/tags`,
+      method: "POST",
+      data: { tag }
+    });
+  },
+  // 删除标签
+  removeTag(workId, tag) {
+    return utils_request.request({
+      url: `/works/${workId}/tags/${encodeURIComponent(tag)}`,
+      method: "DELETE"
+    });
+  },
+  // 切换收藏状态
+  toggleFavorite(workId) {
+    return utils_request.request({
+      url: `/works/${workId}/favorite`,
+      method: "PUT"
+    });
   }
 };
 exports.workApi = workApi;

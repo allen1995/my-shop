@@ -24,6 +24,8 @@
 - [Epic 8: 订单管理（P1）](./epic-8.md) ✅
 - [Epic 9: 个人中心（P1）](./epic-9.md) ✅
 - [Epic 10: 分享功能（P1）](./epic-10.md) ✅
+- [Epic 11: Canvas 实时预览功能增强](./epic-11.md) 🆕 P0
+- [Epic 12: 迁移到 Spring Alibaba AI 框架](./epic-12.md) 🆕 P1
 
 ### 其他章节
 
@@ -45,6 +47,7 @@
 - Epic 3: 作品集管理
 - Epic 4: 印花预览功能
 - Epic 5: 购物车与订单
+- Epic 11: Canvas 实时预览功能增强 🆕
 
 ### P1功能（重要功能，尽快实现）
 - Epic 6: 图生图功能
@@ -52,4 +55,5 @@
 - Epic 8: 订单管理
 - Epic 9: 个人中心
 - Epic 10: 分享功能
+- Epic 12: 迁移到 Spring Alibaba AI 框架 🆕
 

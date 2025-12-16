@@ -49,9 +49,20 @@ const startPolling = () => {
         if (task.status === 'COMPLETED') {
           // 生成完成，跳转到结果页
           clearInterval(pollTimer)
-          uni.redirectTo({
-            url: `/pages/generate/result?taskId=${taskId.value}&imageUrl=${encodeURIComponent(task.resultUrl)}`
-          })
+          if (task.resultUrl) {
+            uni.redirectTo({
+              url: `/pages/generate/result?taskId=${taskId.value}&imageUrl=${encodeURIComponent(task.resultUrl)}`
+            })
+          } else {
+            uni.showModal({
+              title: '生成完成',
+              content: '但未获取到结果图片，请重试',
+              showCancel: false,
+              success: () => {
+                uni.navigateBack()
+              }
+            })
+          }
         } else if (task.status === 'FAILED') {
           // 生成失败
           clearInterval(pollTimer)
@@ -63,14 +74,16 @@ const startPolling = () => {
             confirmText: '重试',
             success: (modalRes) => {
               if (modalRes.confirm) {
-                // 重试
+                // 重试 - 重新开始轮询
+                progress.value = 0
+                estimatedTime.value = 30
                 startPolling()
               } else {
                 uni.navigateBack()
               }
             }
           })
-        } else if (task.status === 'PROCESSING') {
+        } else if (task.status === 'PROCESSING' || task.status === 'PENDING') {
           // 更新进度
           progress.value = Math.min(progress.value + 5, 90)
           estimatedTime.value = Math.max(estimatedTime.value - 1, 5)

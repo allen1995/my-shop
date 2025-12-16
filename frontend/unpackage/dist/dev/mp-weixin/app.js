@@ -5,6 +5,7 @@ if (!Math) {
   "./pages/index/index.js";
   "./pages/login/login.js";
   "./pages/generate/text-to-image.js";
+  "./pages/generate/image-to-image.js";
   "./pages/generate/generating.js";
   "./pages/generate/result.js";
   "./pages/works/list.js";
@@ -13,7 +14,12 @@ if (!Math) {
   "./pages/cart/cart.js";
   "./pages/order/confirm.js";
   "./pages/order/payment.js";
+  "./pages/order/list.js";
+  "./pages/order/detail.js";
   "./pages/profile/profile.js";
+  "./pages/profile/edit.js";
+  "./pages/address/list.js";
+  "./pages/address/edit.js";
 }
 const _sfc_main = {
   onLaunch: function() {

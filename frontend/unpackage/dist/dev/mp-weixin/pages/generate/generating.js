@@ -26,9 +26,20 @@ const _sfc_main = {
             const task = res.data;
             if (task.status === "COMPLETED") {
               clearInterval(pollTimer);
-              common_vendor.index.redirectTo({
-                url: `/pages/generate/result?taskId=${taskId.value}&imageUrl=${encodeURIComponent(task.resultUrl)}`
-              });
+              if (task.resultUrl) {
+                common_vendor.index.redirectTo({
+                  url: `/pages/generate/result?taskId=${taskId.value}&imageUrl=${encodeURIComponent(task.resultUrl)}`
+                });
+              } else {
+                common_vendor.index.showModal({
+                  title: "生成完成",
+                  content: "但未获取到结果图片，请重试",
+                  showCancel: false,
+                  success: () => {
+                    common_vendor.index.navigateBack();
+                  }
+                });
+              }
             } else if (task.status === "FAILED") {
               clearInterval(pollTimer);
               common_vendor.index.showModal({
@@ -39,19 +50,21 @@ const _sfc_main = {
                 confirmText: "重试",
                 success: (modalRes) => {
                   if (modalRes.confirm) {
+                    progress.value = 0;
+                    estimatedTime.value = 30;
                     startPolling();
                   } else {
                     common_vendor.index.navigateBack();
                   }
                 }
               });
-            } else if (task.status === "PROCESSING") {
+            } else if (task.status === "PROCESSING" || task.status === "PENDING") {
               progress.value = Math.min(progress.value + 5, 90);
               estimatedTime.value = Math.max(estimatedTime.value - 1, 5);
             }
           }
         } catch (error) {
-          common_vendor.index.__f__("error", "at pages/generate/generating.vue:80", "查询任务状态失败", error);
+          common_vendor.index.__f__("error", "at pages/generate/generating.vue:93", "查询任务状态失败", error);
         }
       }, 2e3);
     };

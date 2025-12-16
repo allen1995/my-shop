@@ -12,9 +12,8 @@ const _sfc_main = {
       });
     };
     const goToImageToImage = () => {
-      common_vendor.index.showToast({
-        title: "图生图功能开发中",
-        icon: "none"
+      common_vendor.index.navigateTo({
+        url: "/pages/generate/image-to-image"
       });
     };
     const goToWorks = () => {
@@ -34,7 +33,7 @@ const _sfc_main = {
           hotWorks.value = res.data.content || [];
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:76", "加载热门作品失败", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:75", "加载热门作品失败", error);
       }
     });
     return (_ctx, _cache) => {

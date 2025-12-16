@@ -15,7 +15,16 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
     @Query("SELECT w FROM Work w WHERE w.userId = :userId AND (:category IS NULL OR w.category = :category)")
     Page<Work> findByUserIdAndCategory(@Param("userId") Long userId, @Param("category") String category, Pageable pageable);
     
+    @Query("SELECT w FROM Work w WHERE w.userId = :userId AND w.tags LIKE %:tag%")
+    Page<Work> findByUserIdAndTag(@Param("userId") Long userId, @Param("tag") String tag, Pageable pageable);
+    
+    Page<Work> findByUserIdAndIsFavoriteOrderByCreateTimeDesc(Long userId, Boolean isFavorite, Pageable pageable);
+    
     boolean existsByIdAndUserId(Long id, Long userId);
+    
+    long countByUserId(Long userId);
+    
+    long countByUserIdAndIsFavorite(Long userId, Boolean isFavorite);
 }
 
 

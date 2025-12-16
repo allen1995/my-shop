@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080/api' // 开发环境，生产环境需要修改
+export const BASE_URL = 'http://localhost:8080/api' // 开发环境，生产环境需要修改
 
 const request = (options) => {
   return new Promise((resolve, reject) => {
@@ -16,22 +16,17 @@ const request = (options) => {
       },
       success: (res) => {
         if (res.statusCode === 200) {
-          if (res.data.code === 200) {
-            resolve(res.data)
-          } else {
-            // token过期或无效
-            if (res.data.code === 401) {
-              uni.removeStorageSync('token')
-              uni.reLaunch({
-                url: '/pages/login/login'
-              })
-            }
-            uni.showToast({
-              title: res.data.message || '请求失败',
-              icon: 'none'
+          // token过期或无效，自动跳转到登录页
+          if (res.data.code === 401) {
+            uni.removeStorageSync('token')
+            uni.reLaunch({
+              url: '/pages/login/login'
             })
             reject(res.data)
+            return
           }
+          // 返回数据，让业务层自行处理成功和失败
+          resolve(res.data)
         } else {
           uni.showToast({
             title: '网络错误',

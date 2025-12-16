@@ -17,7 +17,7 @@
       <view class="address-card" @click="selectAddress">
         <text class="address-text" v-if="selectedAddress">
           {{ selectedAddress.receiverName }} {{ selectedAddress.receiverPhone }}
-          {{ selectedAddress.province }}{{ selectedAddress.city }}{{ selectedAddress.district }}{{ selectedAddress.detail }}
+          {{ selectedAddress.province }}{{ selectedAddress.city }}{{ selectedAddress.district }}{{ selectedAddress.detailAddress }}
         </text>
         <text class="address-placeholder" v-else>请选择收货地址</text>
         <text class="address-arrow">></text>
@@ -48,10 +48,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { cartApi } from '@/api/cart'
 import { orderApi } from '@/api/order'
-import { onLoad } from '@dcloudio/uni-app'
+import { addressApi } from '@/api/address'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 
 const orderItems = ref([])
 const selectedAddress = ref(null)
@@ -72,28 +73,85 @@ const canSubmit = computed(() => {
   return orderItems.value.length > 0 && selectedAddress.value
 })
 
-onLoad(async () => {
-  await loadCartItems()
+onLoad(async (options) => {
+  // 获取选中的商品ID列表
+  const itemIds = options.itemIds ? options.itemIds.split(',').map(id => parseInt(id)) : []
+  await loadCartItems(itemIds)
+  await loadDefaultAddress()
 })
 
-const loadCartItems = async () => {
+onShow(() => {
+  // 从地址列表页面返回时，检查全局数据中是否有选中的地址
+  const app = getApp()
+  if (app.globalData && app.globalData.selectedAddress) {
+    selectedAddress.value = app.globalData.selectedAddress
+    // 清除全局数据
+    app.globalData.selectedAddress = null
+  }
+})
+
+const loadCartItems = async (selectedIds = []) => {
   try {
     const res = await cartApi.getCartItems()
     if (res.code === 200 && res.data) {
-      // 转换为订单项格式
-      orderItems.value = (res.data || []).map(item => ({
+      let items = res.data || []
+      
+      // 如果有选中的ID，只加载选中的商品
+      if (selectedIds.length > 0) {
+        items = items.filter(item => selectedIds.includes(item.id))
+      }
+      
+      // 转换为订单项格式，使用后端返回的实际价格
+      orderItems.value = items.map(item => ({
         id: item.id,
         workId: item.workId,
         productId: item.productId,
         color: item.color,
         size: item.size,
         quantity: item.quantity,
-        price: 299, // 临时价格，实际应从商品获取
+        price: item.price || 0, // 使用后端返回的实际价格
         previewImageUrl: item.previewImageUrl
       }))
+      
+      console.log('订单商品加载成功，共', orderItems.value.length, '项')
     }
   } catch (error) {
     console.error('加载购物车失败', error)
+    uni.showToast({
+      title: '加载商品失败',
+      icon: 'none'
+    })
+  }
+}
+
+// 加载默认地址
+const loadDefaultAddress = async () => {
+  try {
+    const res = await addressApi.getAddresses()
+    if (res.code === 200 && res.data) {
+      // 查找默认地址
+      const defaultAddress = res.data.find(addr => addr.isDefault)
+      if (defaultAddress) {
+        selectedAddress.value = defaultAddress
+      } else if (res.data.length > 0) {
+        // 如果没有默认地址，使用第一个地址
+        selectedAddress.value = res.data[0]
+      }
+    }
+  } catch (error) {
+    console.error('加载默认地址失败', error)
+  }
+}
+
+// 根据ID加载地址
+const loadAddressById = async (addressId) => {
+  try {
+    const res = await addressApi.getAddress(addressId)
+    if (res.code === 200 && res.data) {
+      selectedAddress.value = res.data
+    }
+  } catch (error) {
+    console.error('加载地址失败', error)
   }
 }
 
@@ -104,30 +162,66 @@ const selectAddress = () => {
 }
 
 const handleSubmit = async () => {
-  if (!canSubmit.value) return
+  if (!canSubmit.value) {
+    if (!selectedAddress.value) {
+      uni.showToast({
+        title: '请选择收货地址',
+        icon: 'none'
+      })
+    }
+    return
+  }
   
   submitting.value = true
   
   try {
     const cartItemIds = orderItems.value.map(item => item.id)
     
+    console.log('创建订单 - cartItemIds:', cartItemIds, 'addressId:', selectedAddress.value?.id)
+    
+    if (!selectedAddress.value || !selectedAddress.value.id) {
+      uni.showToast({
+        title: '请选择收货地址',
+        icon: 'none'
+      })
+      submitting.value = false
+      return
+    }
+    
     const res = await orderApi.createOrder({
       cartItemIds,
       addressId: selectedAddress.value.id
     })
     
+    console.log('创建订单响应:', res)
+    
     if (res.code === 200 && res.data) {
       const order = res.data
       
+      uni.showToast({
+        title: '订单创建成功',
+        icon: 'success'
+      })
+      
       // 跳转到支付页
-      uni.redirectTo({
-        url: `/pages/order/payment?orderId=${order.id}`
+      setTimeout(() => {
+        uni.redirectTo({
+          url: `/pages/order/payment?orderId=${order.id}`
+        })
+      }, 1500)
+    } else {
+      uni.showToast({
+        title: res.message || '创建订单失败',
+        icon: 'none',
+        duration: 2000
       })
     }
   } catch (error) {
+    console.error('创建订单异常:', error)
     uni.showToast({
-      title: '创建订单失败',
-      icon: 'none'
+      title: error.message || '创建订单失败',
+      icon: 'none',
+      duration: 2000
     })
   } finally {
     submitting.value = false

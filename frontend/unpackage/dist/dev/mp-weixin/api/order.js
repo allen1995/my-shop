@@ -30,6 +30,20 @@ const orderApi = {
       url: `/orders/${orderId}/payment`,
       method: "POST"
     });
+  },
+  // 取消订单
+  cancelOrder(orderId) {
+    return utils_request.request({
+      url: `/orders/${orderId}/cancel`,
+      method: "PUT"
+    });
+  },
+  // 确认收货
+  confirmReceipt(orderId) {
+    return utils_request.request({
+      url: `/orders/${orderId}/confirm`,
+      method: "PUT"
+    });
   }
 };
 exports.orderApi = orderApi;

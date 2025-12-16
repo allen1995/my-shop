@@ -3,6 +3,7 @@
     "pages/index/index",
     "pages/login/login",
     "pages/generate/text-to-image",
+    "pages/generate/image-to-image",
     "pages/generate/generating",
     "pages/generate/result",
     "pages/works/list",
@@ -11,7 +12,12 @@
     "pages/cart/cart",
     "pages/order/confirm",
     "pages/order/payment",
-    "pages/profile/profile"
+    "pages/order/list",
+    "pages/order/detail",
+    "pages/profile/profile",
+    "pages/profile/edit",
+    "pages/address/list",
+    "pages/address/edit"
   ],
   "window": {
     "navigationBarTextStyle": "black",

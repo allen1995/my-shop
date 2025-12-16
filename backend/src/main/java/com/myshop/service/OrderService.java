@@ -18,11 +18,21 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
+    private final AddressRepository addressRepository;
     
     @Transactional
     public Order createOrder(Long userId, List<Long> cartItemIds, Long addressId) {
+        // 验证地址存在且属于当前用户
+        if (!addressRepository.existsByIdAndUserId(addressId, userId)) {
+            throw new RuntimeException("地址不存在或不属于当前用户");
+        }
+        
         // 获取购物车项
         List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
+        
+        if (cartItems.isEmpty()) {
+            throw new RuntimeException("购物车项不存在");
+        }
         
         // 验证购物车项属于当前用户
         cartItems.forEach(item -> {
@@ -67,6 +77,12 @@ public class OrderService {
         for (OrderItem orderItem : orderItems) {
             orderItem.setOrderId(order.getId());
             orderItemRepository.save(orderItem);
+        }
+        
+        // 刷新订单以加载订单项
+        order = orderRepository.findById(order.getId()).orElse(order);
+        if (order.getItems() != null) {
+            order.getItems().size(); // 触发懒加载
         }
         
         // 删除购物车项

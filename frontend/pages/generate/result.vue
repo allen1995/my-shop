@@ -68,10 +68,62 @@ const handleSave = async () => {
   })
 }
 
-const handleApply = () => {
-  // 跳转到预览页，传递图片URL
-  uni.navigateTo({
-    url: `/pages/preview/preview?imageUrl=${encodeURIComponent(imageUrl.value)}`
+const handleApply = async () => {
+  // 先保存作品（如果还没保存），获取workId
+  // 然后跳转到预览页
+  uni.showModal({
+    title: '应用到包包',
+    content: '需要先保存作品才能应用到包包，是否现在保存？',
+    success: async (res) => {
+      if (res.confirm) {
+        // 先保存作品
+        uni.showModal({
+          title: '保存作品',
+          editable: true,
+          placeholderText: '请输入作品标题',
+          success: async (saveRes) => {
+            if (saveRes.confirm) {
+              try {
+                uni.showLoading({
+                  title: '保存中...'
+                })
+                
+                const saveResult = await workApi.saveWork({
+                  title: saveRes.content || '未命名作品',
+                  imageUrl: imageUrl.value
+                })
+                
+                uni.hideLoading()
+                
+                if (saveResult.code === 200 && saveResult.data) {
+                  const workId = saveResult.data.id
+                  // 跳转到预览页，传递图片URL和workId
+                  uni.navigateTo({
+                    url: `/pages/preview/preview?workId=${workId}&imageUrl=${encodeURIComponent(imageUrl.value)}`
+                  })
+                } else {
+                  uni.showToast({
+                    title: saveResult.message || '保存失败',
+                    icon: 'none'
+                  })
+                }
+              } catch (error) {
+                uni.hideLoading()
+                uni.showToast({
+                  title: '保存失败',
+                  icon: 'none'
+                })
+              }
+            }
+          }
+        })
+      } else {
+        // 用户取消，直接跳转（但可能无法添加到购物车）
+        uni.navigateTo({
+          url: `/pages/preview/preview?imageUrl=${encodeURIComponent(imageUrl.value)}`
+        })
+      }
+    }
   })
 }
 

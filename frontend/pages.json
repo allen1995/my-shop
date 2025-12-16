@@ -19,6 +19,12 @@
       }
     },
     {
+      "path": "pages/generate/image-to-image",
+      "style": {
+        "navigationBarTitleText": "图生图"
+      }
+    },
+    {
       "path": "pages/generate/generating",
       "style": {
         "navigationBarTitleText": "生成中"
@@ -67,9 +73,39 @@
       }
     },
     {
+      "path": "pages/order/list",
+      "style": {
+        "navigationBarTitleText": "我的订单"
+      }
+    },
+    {
+      "path": "pages/order/detail",
+      "style": {
+        "navigationBarTitleText": "订单详情"
+      }
+    },
+    {
       "path": "pages/profile/profile",
       "style": {
         "navigationBarTitleText": "个人中心"
+      }
+    },
+    {
+      "path": "pages/profile/edit",
+      "style": {
+        "navigationBarTitleText": "编辑资料"
+      }
+    },
+    {
+      "path": "pages/address/list",
+      "style": {
+        "navigationBarTitleText": "收货地址"
+      }
+    },
+    {
+      "path": "pages/address/edit",
+      "style": {
+        "navigationBarTitleText": "编辑地址"
       }
     }
   ],

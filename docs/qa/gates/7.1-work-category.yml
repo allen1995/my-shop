@@ -1,0 +1,18 @@
+schema: 1
+story: '7.1'
+story_title: '作品分类功能'
+gate: CONCERNS
+status_reason: '功能实现完整，所有验收标准已满足，但缺少实际测试代码和输入验证，建议在发布前补充。'
+reviewer: 'Quinn'
+updated: '2024-12-16T01:50:00Z'
+top_issues:
+  - id: 'TEST-001'
+    severity: medium
+    finding: '缺少实际测试代码实现，虽然测试设计文档完整，但未找到WorkControllerTest.java测试文件'
+    suggested_action: '根据测试设计文档（7.1-test-design-20241216.md）实现单元测试和集成测试，特别是P0优先级测试场景'
+  - id: 'REQ-001'
+    severity: medium
+    finding: 'PUT /api/works/{workId}/category接口缺少输入验证，category字段没有长度限制和格式验证'
+    suggested_action: '在接口层添加category字段验证：非空检查、长度限制（最大50字符，与实体定义一致）、字符格式验证'
+waiver: { active: false }
+

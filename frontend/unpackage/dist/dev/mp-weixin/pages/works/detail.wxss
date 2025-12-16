@@ -61,6 +61,82 @@
   font-size: 24rpx;
   color: #999999;
 }
+.info-section .category-section.data-v-dfde3efa {
+  margin: 30rpx 0;
+  padding-top: 30rpx;
+  border-top: 1rpx solid #E5E5E5;
+}
+.info-section .category-section .category-title.data-v-dfde3efa {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20rpx;
+}
+.info-section .category-section .category-content.data-v-dfde3efa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.info-section .category-section .category-content .category-value.data-v-dfde3efa {
+  font-size: 28rpx;
+  color: #333333;
+  padding: 10rpx 20rpx;
+  background: #F0F0F0;
+  border-radius: 20rpx;
+}
+.info-section .category-section .category-content .category-placeholder.data-v-dfde3efa {
+  font-size: 28rpx;
+  color: #999999;
+  font-style: italic;
+}
+.info-section .category-section .category-content .category-edit-btn.data-v-dfde3efa {
+  font-size: 26rpx;
+  color: #007AFF;
+  padding: 10rpx 20rpx;
+  background: #E8F4FD;
+  border-radius: 20rpx;
+}
+.info-section .tags-section.data-v-dfde3efa {
+  margin: 30rpx 0;
+  padding-top: 30rpx;
+  border-top: 1rpx solid #E5E5E5;
+}
+.info-section .tags-section .tags-title.data-v-dfde3efa {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20rpx;
+}
+.info-section .tags-section .tags-list.data-v-dfde3efa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+  margin-bottom: 20rpx;
+}
+.info-section .tags-section .tags-list .tag-item.data-v-dfde3efa {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  background: #F0F0F0;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #666666;
+}
+.info-section .tags-section .tags-list .tag-item .tag-remove.data-v-dfde3efa {
+  margin-left: 10rpx;
+  font-size: 32rpx;
+  color: #FF3B30;
+  font-weight: bold;
+}
+.info-section .tags-section .tags-list .tag-item.add-tag.data-v-dfde3efa {
+  background: #E8F4FD;
+  color: #007AFF;
+  border: 1rpx dashed #007AFF;
+}
+.info-section .tags-section .tags-actions .tags-edit-btn.data-v-dfde3efa {
+  font-size: 26rpx;
+  color: #007AFF;
+}
 .action-section.data-v-dfde3efa {
   padding: 30rpx 40rpx;
   display: flex;
@@ -81,5 +157,17 @@
 }
 .action-section .action-btn.delete-btn.data-v-dfde3efa {
   background: #FF3B30;
+  color: #ffffff;
+}
+.action-section .action-btn.favorite-btn.data-v-dfde3efa {
+  background: #F5F5F5;
+  color: #666666;
+}
+.action-section .action-btn.favorite-btn.active.data-v-dfde3efa {
+  background: linear-gradient(135deg, #FF9500 0%, #FF6B00 100%);
+  color: #ffffff;
+}
+.action-section .action-btn.share-btn.data-v-dfde3efa {
+  background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
   color: #ffffff;
 }

@@ -89,8 +89,10 @@ so that {benefit}
 - **Epic 8**: 4个Stories
 - **Epic 9**: 5个Stories
 - **Epic 10**: 2个Stories
+- **Epic 11**: 2个Stories 🆕
+- **Epic 12**: 3个Stories 🆕
 
-**总计**: 56个Stories
+**总计**: 61个Stories
 
 ## 建议
 

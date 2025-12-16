@@ -1,5 +1,6 @@
 package com.myshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
@@ -39,6 +40,7 @@ public class OrderItem {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", insertable = false, updatable = false)
+    @JsonIgnore
     private Order order;
 }
 

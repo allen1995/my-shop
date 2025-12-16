@@ -47,9 +47,8 @@ const goToTextToImage = () => {
 }
 
 const goToImageToImage = () => {
-  uni.showToast({
-    title: '图生图功能开发中',
-    icon: 'none'
+  uni.navigateTo({
+    url: '/pages/generate/image-to-image'
   })
 }
 

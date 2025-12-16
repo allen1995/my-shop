@@ -1,0 +1,22 @@
+schema: 1
+story: '8.1'
+story_title: '订单列表查询API'
+gate: CONCERNS
+status_reason: '功能实现完整，所有验收标准已满足，但缺少实际测试代码和性能验证，建议在发布前补充。'
+reviewer: 'Quinn'
+updated: '2024-12-16T02:00:00Z'
+top_issues:
+  - id: 'TEST-001'
+    severity: medium
+    finding: '缺少实际测试代码实现，虽然测试设计文档完整（12个测试场景），但未找到OrderControllerTest.java测试文件'
+    suggested_action: '根据测试设计文档（8.1-test-design-20241216.md）实现单元测试和集成测试，优先实现P0测试场景（7个）'
+  - id: 'PERF-001'
+    severity: medium
+    finding: 'AC5要求接口响应时间小于100ms，但未进行性能测试验证'
+    suggested_action: '进行性能测试验证响应时间要求，特别是在数据量较大的情况下（8.1-INT-010, 8.1-INT-011）'
+  - id: 'REQ-001'
+    severity: low
+    finding: '分页参数验证可能不足，page和size参数没有明确的边界值限制'
+    suggested_action: '添加分页参数验证：page >= 0, size在合理范围内（如1-100），避免过大size导致性能问题'
+waiver: { active: false }
+

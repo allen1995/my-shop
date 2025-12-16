@@ -1,0 +1,22 @@
+schema: 1
+story: '7.2'
+story_title: '作品标签功能'
+gate: CONCERNS
+status_reason: '核心功能实现完整，所有必需验收标准已满足，但缺少实际测试代码和输入验证，建议在发布前补充。'
+reviewer: 'Quinn'
+updated: '2024-12-16T01:55:00Z'
+top_issues:
+  - id: 'TEST-001'
+    severity: medium
+    finding: '缺少实际测试代码实现，虽然测试设计文档完整（15个测试场景），但未找到WorkControllerTest.java测试文件'
+    suggested_action: '根据测试设计文档（7.2-test-design-20241216.md）实现单元测试和集成测试，优先实现P0测试场景（6个）'
+  - id: 'REQ-001'
+    severity: medium
+    finding: 'PUT /api/works/{workId}/tags接口缺少输入验证，标签数组和单个标签长度、格式未验证'
+    suggested_action: '在接口层添加标签验证：标签数组非空检查、单个标签长度限制（建议最大50字符）、标签格式验证（去除空白字符、特殊字符限制）'
+  - id: 'REQ-002'
+    severity: low
+    finding: 'AC5标签自动补全功能未实现，但已标记为可选功能，符合预期'
+    suggested_action: '如需要，可在后续迭代中实现标签自动补全功能'
+waiver: { active: false }
+

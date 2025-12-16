@@ -15,21 +15,15 @@ const request = (options) => {
       },
       success: (res) => {
         if (res.statusCode === 200) {
-          if (res.data.code === 200) {
-            resolve(res.data);
-          } else {
-            if (res.data.code === 401) {
-              common_vendor.index.removeStorageSync("token");
-              common_vendor.index.reLaunch({
-                url: "/pages/login/login"
-              });
-            }
-            common_vendor.index.showToast({
-              title: res.data.message || "请求失败",
-              icon: "none"
+          if (res.data.code === 401) {
+            common_vendor.index.removeStorageSync("token");
+            common_vendor.index.reLaunch({
+              url: "/pages/login/login"
             });
             reject(res.data);
+            return;
           }
+          resolve(res.data);
         } else {
           common_vendor.index.showToast({
             title: "网络错误",
@@ -48,5 +42,6 @@ const request = (options) => {
     });
   });
 };
+exports.BASE_URL = BASE_URL;
 exports.request = request;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/utils/request.js.map

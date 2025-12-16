@@ -1,0 +1,14 @@
+schema: 1
+story: '9.2'
+story_title: '收货地址实体和API'
+gate: CONCERNS
+status_reason: '功能实现完整，所有验收标准已满足，地址验证完善，但缺少实际测试代码，建议在发布前补充测试覆盖。'
+reviewer: 'Quinn'
+updated: '2024-12-16T02:10:00Z'
+top_issues:
+  - id: 'TEST-001'
+    severity: medium
+    finding: '缺少实际测试代码实现，虽然测试设计文档完整（18个测试场景），但未找到AddressControllerTest.java测试文件'
+    suggested_action: '根据测试设计文档（9.2-test-design-20241216.md）实现单元测试和集成测试，优先实现P0测试场景（10个），特别是地址CRUD和默认地址设置功能'
+waiver: { active: false }
+

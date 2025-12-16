@@ -1,0 +1,14 @@
+schema: 1
+story: '9.4'
+story_title: '前端个人中心页面'
+gate: CONCERNS
+status_reason: '功能实现完整，所有验收标准已满足，但缺少实际测试代码，建议在发布前补充E2E测试覆盖。'
+reviewer: 'Quinn'
+updated: '2024-12-16T02:10:00Z'
+top_issues:
+  - id: 'TEST-001'
+    severity: medium
+    finding: '缺少实际测试代码实现，虽然测试设计文档完整（8个测试场景，主要是E2E测试），但未找到自动化测试实现'
+    suggested_action: '根据测试设计文档（9.4-test-design-20241216.md）实现E2E测试，优先实现P0测试场景（3个），特别是用户信息显示、订单统计显示等核心功能'
+waiver: { active: false }
+

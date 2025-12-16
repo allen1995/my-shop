@@ -1,0 +1,18 @@
+schema: 1
+story: '9.5'
+story_title: '前端地址管理页面'
+gate: CONCERNS
+status_reason: '功能实现完整，所有验收标准已满足，但省市区选择器使用简化数据，且缺少实际测试代码，建议在发布前补充完整数据和测试覆盖。'
+reviewer: 'Quinn'
+updated: '2024-12-16T02:10:00Z'
+top_issues:
+  - id: 'TEST-001'
+    severity: medium
+    finding: '缺少实际测试代码实现，虽然测试设计文档完整（14个测试场景，主要是E2E测试），但未找到自动化测试实现'
+    suggested_action: '根据测试设计文档（9.5-test-design-20241216.md）实现E2E测试，优先实现P0测试场景（6个），特别是地址CRUD、设置默认地址等核心功能'
+  - id: 'REQ-001'
+    severity: low
+    finding: '省市区选择器使用简化数据（仅包含部分省市），实际应使用完整的省市区数据'
+    suggested_action: '集成完整的省市区数据（可从后端API获取或使用第三方库），确保用户可以选择所有省市区'
+waiver: { active: false }
+

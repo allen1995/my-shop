@@ -49,9 +49,54 @@ const _sfc_main = {
         }
       });
     };
-    const handleApply = () => {
-      common_vendor.index.navigateTo({
-        url: `/pages/preview/preview?imageUrl=${encodeURIComponent(imageUrl.value)}`
+    const handleApply = async () => {
+      common_vendor.index.showModal({
+        title: "应用到包包",
+        content: "需要先保存作品才能应用到包包，是否现在保存？",
+        success: async (res) => {
+          if (res.confirm) {
+            common_vendor.index.showModal({
+              title: "保存作品",
+              editable: true,
+              placeholderText: "请输入作品标题",
+              success: async (saveRes) => {
+                if (saveRes.confirm) {
+                  try {
+                    common_vendor.index.showLoading({
+                      title: "保存中..."
+                    });
+                    const saveResult = await api_work.workApi.saveWork({
+                      title: saveRes.content || "未命名作品",
+                      imageUrl: imageUrl.value
+                    });
+                    common_vendor.index.hideLoading();
+                    if (saveResult.code === 200 && saveResult.data) {
+                      const workId = saveResult.data.id;
+                      common_vendor.index.navigateTo({
+                        url: `/pages/preview/preview?workId=${workId}&imageUrl=${encodeURIComponent(imageUrl.value)}`
+                      });
+                    } else {
+                      common_vendor.index.showToast({
+                        title: saveResult.message || "保存失败",
+                        icon: "none"
+                      });
+                    }
+                  } catch (error) {
+                    common_vendor.index.hideLoading();
+                    common_vendor.index.showToast({
+                      title: "保存失败",
+                      icon: "none"
+                    });
+                  }
+                }
+              }
+            });
+          } else {
+            common_vendor.index.navigateTo({
+              url: `/pages/preview/preview?imageUrl=${encodeURIComponent(imageUrl.value)}`
+            });
+          }
+        }
       });
     };
     const handleRegenerate = () => {

@@ -1,11 +1,16 @@
 <template>
   <view class="preview-container">
     <view class="preview-section">
-      <canvas 
-        canvas-id="previewCanvas" 
-        class="preview-canvas"
-        :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
-      ></canvas>
+      <!-- 暂时使用 image 标签显示，确保页面能正常渲染 -->
+      <image 
+        v-if="imageUrl"
+        :src="imageUrl" 
+        class="preview-image"
+        mode="aspectFit"
+      ></image>
+      <view v-else class="preview-placeholder">
+        <text class="placeholder-text">暂无预览图片</text>
+      </view>
     </view>
     
     <view class="product-section">
@@ -54,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { productApi } from '@/api/product'
 import { cartApi } from '@/api/cart'
 import { onLoad } from '@dcloudio/uni-app'
@@ -65,24 +70,56 @@ const products = ref([])
 const selectedProduct = ref(null)
 const selectedColor = ref('')
 const selectedSize = ref('')
-const canvasWidth = ref(750)
-const canvasHeight = ref(750)
 
 const canAddToCart = computed(() => {
   return selectedProduct.value && selectedColor.value && selectedSize.value
 })
 
 onLoad(async (options) => {
-  workId.value = options.workId
+  workId.value = options.workId || null
   imageUrl.value = decodeURIComponent(options.imageUrl || '')
+  console.log('预览页面加载 - workId:', workId.value, 'imageUrl:', imageUrl.value)
+  
+  if (!workId.value) {
+    uni.showToast({
+      title: '缺少作品ID，无法添加到购物车',
+      icon: 'none',
+      duration: 2000
+    })
+  }
+  
   await loadProducts()
 })
 
 const loadProducts = async () => {
   try {
     const res = await productApi.getProducts()
+    console.log('商品列表响应:', res)
     if (res.code === 200 && res.data) {
       products.value = res.data || []
+      console.log('商品列表:', products.value)
+      
+      // 处理商品数据，确保 colors 和 sizes 是数组
+      products.value = products.value.map(product => {
+        // 如果 colors 是字符串（JSON），解析为数组
+        if (typeof product.colors === 'string') {
+          try {
+            product.colors = JSON.parse(product.colors)
+          } catch (e) {
+            product.colors = []
+          }
+        }
+        // 如果 sizes 是字符串（JSON），解析为数组
+        if (typeof product.sizes === 'string') {
+          try {
+            product.sizes = JSON.parse(product.sizes)
+          } catch (e) {
+            product.sizes = []
+          }
+        }
+        return product
+      })
+      
       if (products.value.length > 0) {
         selectedProduct.value = products.value[0]
         if (selectedProduct.value.colors && selectedProduct.value.colors.length > 0) {
@@ -92,9 +129,15 @@ const loadProducts = async () => {
           selectedSize.value = selectedProduct.value.sizes[0]
         }
       }
+    } else {
+      console.warn('商品列表加载失败:', res.message)
+      // 如果加载失败，使用默认商品数据，确保页面能显示
+      products.value = []
     }
   } catch (error) {
     console.error('加载商品失败', error)
+    // 加载失败时，使用空数组，确保页面能显示
+    products.value = []
   }
 }
 
@@ -109,9 +152,47 @@ const onProductChange = (e) => {
 }
 
 const handleAddToCart = async () => {
-  if (!canAddToCart.value) return
+  if (!canAddToCart.value) {
+    uni.showToast({
+      title: '请选择商品规格',
+      icon: 'none'
+    })
+    return
+  }
+  
+  if (!workId.value) {
+    uni.showModal({
+      title: '提示',
+      content: '当前图片未保存为作品，无法添加到购物车。是否先保存为作品？',
+      success: async (res) => {
+        if (res.confirm) {
+          // 跳转到作品集页面，让用户先保存
+          uni.showToast({
+            title: '请先保存作品',
+            icon: 'none'
+          })
+          setTimeout(() => {
+            uni.switchTab({
+              url: '/pages/works/list'
+            })
+          }, 1500)
+        }
+      }
+    })
+    return
+  }
+  
+  if (!selectedProduct.value || !selectedColor.value || !selectedSize.value) {
+    uni.showToast({
+      title: '信息不完整',
+      icon: 'none'
+    })
+    return
+  }
   
   try {
+    console.log('添加购物车 - workId:', workId.value, 'productId:', selectedProduct.value.id, 'color:', selectedColor.value, 'size:', selectedSize.value)
+    
     const res = await cartApi.addToCart({
       workId: workId.value,
       productId: selectedProduct.value.id,
@@ -121,19 +202,28 @@ const handleAddToCart = async () => {
       previewImageUrl: imageUrl.value
     })
     
+    console.log('添加购物车响应:', res)
+    
     if (res.code === 200) {
       uni.showToast({
         title: '已加入购物车',
         icon: 'success'
       })
       
+      // 延迟跳转，让用户看到成功提示
       setTimeout(() => {
         uni.switchTab({
           url: '/pages/cart/cart'
         })
       }, 1500)
+    } else {
+      uni.showToast({
+        title: res.message || '加入购物车失败',
+        icon: 'none'
+      })
     }
   } catch (error) {
+    console.error('加入购物车异常:', error)
     uni.showToast({
       title: '加入购物车失败',
       icon: 'none'
@@ -154,10 +244,30 @@ const handleAddToCart = async () => {
   margin-bottom: 20rpx;
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 400rpx;
   
-  .preview-canvas {
+  .preview-image {
+    width: 100%;
+    max-width: 750rpx;
+    height: 750rpx;
     border: 2rpx solid #E5E5E5;
     border-radius: 20rpx;
+  }
+  
+  .preview-placeholder {
+    width: 100%;
+    height: 400rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F5F5F5;
+    border-radius: 20rpx;
+    
+    .placeholder-text {
+      font-size: 28rpx;
+      color: #999999;
+    }
   }
 }
 
