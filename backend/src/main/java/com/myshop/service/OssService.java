@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
@@ -137,6 +138,120 @@ public class OssService {
             // 如果提取失败，返回原URL的最后一部分
             return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         }
+    }
+    
+    /**
+     * 从URL下载图片并上传到OSS
+     * @param imageUrl 图片URL
+     * @param folder 存储文件夹
+     * @return OSS文件URL（带签名）
+     */
+    public String uploadFromUrl(String imageUrl, String folder) {
+        OSS ossClient = getOssClient();
+        try {
+            log.info("从URL下载图片: {}", imageUrl);
+            
+            // 从URL下载图片
+            URL url = URI.create(imageUrl).toURL();
+            InputStream inputStream = url.openConnection().getInputStream();
+            
+            // 生成文件名
+            String fileName = UUID.randomUUID().toString() + ".jpg";
+            String objectName = folder + "/" + fileName;
+            
+            // 上传到OSS
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, inputStream);
+            ossClient.putObject(putObjectRequest);
+            
+            // 生成带签名的URL（有效期7天）
+            Date expiration = new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000L);
+            URL signedUrl = ossClient.generatePresignedUrl(bucketName, objectName, expiration);
+            
+            // 确保URL使用HTTPS协议
+            String urlString = signedUrl.toString();
+            if (urlString.startsWith("http://")) {
+                urlString = urlString.replace("http://", "https://");
+                log.info("将HTTP URL转换为HTTPS: {}", urlString);
+            }
+            
+            log.info("图片上传成功: {}", urlString);
+            return urlString;
+        } catch (Exception e) {
+            log.error("从URL上传图片失败: {}", imageUrl, e);
+            throw new RuntimeException("从URL上传图片失败: " + e.getMessage(), e);
+        } finally {
+            ossClient.shutdown();
+        }
+    }
+    
+    /**
+     * 从URL下载图片并上传到OSS（生成公开访问URL）
+     * 
+     * 注意：此方法会将图片上传到公开读权限的目录
+     * 用于需要被第三方API访问的场景（如通义万相API）
+     * 
+     * @param imageUrl 图片URL
+     * @param folder 存储文件夹
+     * @return 公开可访问的OSS URL（不带签名）
+     */
+    public String uploadFromUrlPublic(String imageUrl, String folder) {
+        OSS ossClient = getOssClient();
+        try {
+            log.info("从URL下载图片并生成公开访问URL: {}", imageUrl);
+            
+            // 从URL下载图片
+            URL url = URI.create(imageUrl).toURL();
+            InputStream inputStream = url.openConnection().getInputStream();
+            
+            // 生成文件名
+            String fileName = UUID.randomUUID().toString() + ".jpg";
+            String objectName = folder + "/" + fileName;
+            
+            // 上传到OSS
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, inputStream);
+            ossClient.putObject(putObjectRequest);
+            
+            // 上传后设置对象ACL为公共读
+            try {
+                ossClient.setObjectAcl(bucketName, objectName, 
+                    com.aliyun.oss.model.CannedAccessControlList.PublicRead);
+                log.info("已设置对象为公共读权限");
+            } catch (Exception e) {
+                log.warn("设置公共读权限失败，可能需要在OSS控制台手动配置: {}", e.getMessage());
+            }
+            
+            // 生成公开URL（不带签名）
+            String publicUrl = buildPublicUrl(objectName);
+            
+            log.info("图片上传成功（公开访问）: {}", publicUrl);
+            return publicUrl;
+            
+        } catch (Exception e) {
+            log.error("从URL上传图片失败（公开模式）: {}", imageUrl, e);
+            throw new RuntimeException("从URL上传图片失败: " + e.getMessage(), e);
+        } finally {
+            ossClient.shutdown();
+        }
+    }
+    
+    /**
+     * 构建公开访问的OSS URL
+     */
+    private String buildPublicUrl(String objectName) {
+        // 确保endpoint使用HTTPS
+        String httpsEndpoint = endpoint;
+        if (endpoint.startsWith("http://")) {
+            httpsEndpoint = endpoint.replace("http://", "https://");
+        } else if (!endpoint.startsWith("https://")) {
+            httpsEndpoint = "https://" + endpoint;
+        }
+        
+        // 构建公开URL: https://{bucket}.{endpoint}/{objectName}
+        return String.format("%s/%s/%s", 
+            httpsEndpoint.replace("https://", "https://" + bucketName + "."),
+            bucketName,
+            objectName
+        ).replace("/" + bucketName + "/", "/");
     }
     
     public String uploadImage(MultipartFile file, String folder) {

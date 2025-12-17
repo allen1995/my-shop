@@ -56,6 +56,26 @@ app:
     dashscope:
       api-key: ${ALIYUN_DASHSCOPE_API_KEY:your-api-key}
   
+  # AI模型配置
+  ai:
+    # 主模型（默认使用dashscope）
+    primary-model: ${AI_PRIMARY_MODEL:dashscope}
+    # 备用模型（主模型失败时使用）
+    fallback-model: ${AI_FALLBACK_MODEL:}
+    # 模型配置
+    models:
+      dashscope:
+        enabled: ${AI_DASHSCOPE_ENABLED:true}
+        priority: 1
+      openai:
+        enabled: ${AI_OPENAI_ENABLED:false}
+        priority: 2
+        api-key: ${OPENAI_API_KEY:}
+      stability:
+        enabled: ${AI_STABILITY_ENABLED:false}
+        priority: 3
+        api-key: ${STABILITY_API_KEY:}
+  
   wechat-pay:
     app-id: ${WECHAT_PAY_APP_ID:your-app-id}
     mch-id: ${WECHAT_PAY_MCH_ID:your-mch-id}

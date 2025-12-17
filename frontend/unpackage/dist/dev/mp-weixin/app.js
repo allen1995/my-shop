@@ -22,15 +22,19 @@ if (!Math) {
   "./pages/address/edit.js";
 }
 const _sfc_main = {
+  globalData: {
+    workDeleted: false,
+    deletedWorkId: null
+  },
   onLaunch: function() {
-    common_vendor.index.__f__("log", "at App.vue:9", "App Launch");
+    common_vendor.index.__f__("log", "at App.vue:13", "App Launch");
     this.checkLogin();
   },
   onShow: function() {
-    common_vendor.index.__f__("log", "at App.vue:14", "App Show");
+    common_vendor.index.__f__("log", "at App.vue:18", "App Show");
   },
   onHide: function() {
-    common_vendor.index.__f__("log", "at App.vue:17", "App Hide");
+    common_vendor.index.__f__("log", "at App.vue:21", "App Hide");
   },
   methods: {
     checkLogin() {

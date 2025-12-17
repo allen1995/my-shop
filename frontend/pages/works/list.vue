@@ -232,8 +232,28 @@ onMounted(() => {
 })
 
 onShow(() => {
-  // 从其他页面返回时，重新加载分类列表（确保数据一致）
-  loadAllCategories()
+  // 从其他页面返回时，检查是否有作品被删除
+  const app = getApp()
+  if (app && app.globalData && app.globalData.workDeleted) {
+    // 如果有作品被删除，刷新列表
+    const deletedWorkId = app.globalData.deletedWorkId
+    console.log('检测到作品被删除，刷新列表', deletedWorkId)
+    
+    // 从列表中移除被删除的作品
+    if (deletedWorkId) {
+      works.value = works.value.filter(work => work.id !== deletedWorkId)
+    }
+    
+    // 重新加载作品列表
+    loadWorks(true)
+    
+    // 清除标记
+    app.globalData.workDeleted = false
+    app.globalData.deletedWorkId = null
+  } else {
+    // 正常返回时，只重新加载分类列表
+    loadAllCategories()
+  }
 })
 
 onPullDownRefresh(() => {

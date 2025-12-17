@@ -1,131 +1,224 @@
-/**
- * 这里是uni-app内置的常用样式变量
- *
- * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
- * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
- *
- */
-/**
- * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
- *
- * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
- */
-/* 颜色变量 */
-/* 行为相关颜色 */
-/* 文字基本颜色 */
-/* 背景颜色 */
-/* 边框颜色 */
-/* 尺寸变量 */
-/* 文字尺寸 */
-/* 图片尺寸 */
-/* Border Radius */
-/* 水平间距 */
-/* 垂直间距 */
-/* 透明度 */
-/* 文章场景相关 */
+
 .preview-container.data-v-2dad6c07 {
   min-height: 100vh;
-  background-color: #F8F8F8;
+  background-color: #f5f5f5;
+  padding-bottom: 100rpx;
 }
+
+/* 预览区域 */
 .preview-section.data-v-2dad6c07 {
-  background: #ffffff;
+  background-color: #fff;
   padding: 40rpx;
   margin-bottom: 20rpx;
+}
+.preview-placeholder.data-v-2dad6c07 {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  min-height: 400rpx;
+  justify-content: center;
+  min-height: 600rpx;
+  background-color: #fafafa;
+  border-radius: 16rpx;
+  border: 2rpx dashed #ddd;
 }
-.preview-section .preview-image.data-v-2dad6c07 {
-  width: 100%;
-  max-width: 750rpx;
-  height: 750rpx;
-  border: 2rpx solid #E5E5E5;
-  border-radius: 20rpx;
-}
-.preview-section .preview-placeholder.data-v-2dad6c07 {
-  width: 100%;
+.placeholder-image.data-v-2dad6c07 {
+  width: 400rpx;
   height: 400rpx;
+  margin-bottom: 20rpx;
+}
+.placeholder-hint.data-v-2dad6c07 {
+  font-size: 28rpx;
+  color: #999;
+}
+.preview-loading.data-v-2dad6c07 {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #F5F5F5;
-  border-radius: 20rpx;
+  min-height: 600rpx;
+  background-color: #fafafa;
+  border-radius: 16rpx;
 }
-.preview-section .preview-placeholder .placeholder-text.data-v-2dad6c07 {
-  font-size: 28rpx;
-  color: #999999;
-}
-.product-section.data-v-2dad6c07 {
-  background: #ffffff;
-  padding: 40rpx;
-  margin-bottom: 20rpx;
-}
-.product-section .product-selector.data-v-2dad6c07 {
-  margin-bottom: 40rpx;
-}
-.product-section .product-selector .selector-label.data-v-2dad6c07 {
-  display: block;
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333333;
-  margin-bottom: 20rpx;
-}
-.product-section .product-selector .picker-view.data-v-2dad6c07 {
-  padding: 20rpx;
-  background: #F5F5F5;
-  border-radius: 10rpx;
-  font-size: 28rpx;
-  color: #333333;
-}
-.product-section .spec-selector .spec-item.data-v-2dad6c07 {
+.loading-spinner.data-v-2dad6c07 {
+  width: 80rpx;
+  height: 80rpx;
+  border: 6rpx solid #f3f3f3;
+  border-top: 6rpx solid #07c160;
+  border-radius: 50%;
+  animation: spin-2dad6c07 1s linear infinite;
   margin-bottom: 30rpx;
 }
-.product-section .spec-selector .spec-item.data-v-2dad6c07:last-child {
-  margin-bottom: 0;
+@keyframes spin-2dad6c07 {
+0% { transform: rotate(0deg);
 }
-.product-section .spec-selector .spec-item .spec-label.data-v-2dad6c07 {
-  display: block;
+100% { transform: rotate(360deg);
+}
+}
+.loading-text.data-v-2dad6c07 {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+.loading-tip.data-v-2dad6c07 {
+  font-size: 24rpx;
+  color: #999;
+}
+.preview-result.data-v-2dad6c07 {
+  position: relative;
+}
+.preview-image.data-v-2dad6c07 {
+  width: 100%;
+  min-height: 600rpx;
+  border-radius: 16rpx;
+  background-color: #fafafa;
+}
+.regenerate-btn.data-v-2dad6c07 {
+  position: absolute;
+  bottom: 20rpx;
+  right: 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 16rpx 32rpx;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1rpx solid #ddd;
+  border-radius: 40rpx;
   font-size: 28rpx;
-  font-weight: bold;
-  color: #333333;
+  color: #333;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+.btn-icon.data-v-2dad6c07 {
+  font-size: 32rpx;
+}
+.error-message.data-v-2dad6c07 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400rpx;
+  background-color: #fff5f5;
+  border-radius: 16rpx;
+  border: 2rpx solid #ffebee;
+  padding: 40rpx;
+}
+.error-icon.data-v-2dad6c07 {
+  font-size: 80rpx;
   margin-bottom: 20rpx;
 }
-.product-section .spec-selector .spec-item .spec-options.data-v-2dad6c07 {
+.error-text.data-v-2dad6c07 {
+  font-size: 28rpx;
+  color: #f56c6c;
+  text-align: center;
+  margin-bottom: 30rpx;
+  line-height: 1.6;
+}
+.retry-btn.data-v-2dad6c07 {
+  padding: 16rpx 48rpx;
+  background-color: #07c160;
+  color: #fff;
+  border: none;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+}
+
+/* 商品选择区域 */
+.product-section.data-v-2dad6c07 {
+  background-color: #fff;
+  padding: 40rpx;
+  margin-bottom: 20rpx;
+}
+.product-selector.data-v-2dad6c07 {
+  margin-bottom: 30rpx;
+}
+.selector-label.data-v-2dad6c07 {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+}
+.picker-view.data-v-2dad6c07 {
   display: flex;
-  gap: 20rpx;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 30rpx;
+  background-color: #f8f8f8;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  color: #333;
+}
+.picker-arrow.data-v-2dad6c07 {
+  font-size: 24rpx;
+  color: #999;
+}
+.spec-selector.data-v-2dad6c07 {
+  margin-bottom: 30rpx;
+}
+.spec-item.data-v-2dad6c07 {
+  margin-bottom: 30rpx;
+}
+.spec-label.data-v-2dad6c07 {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+}
+.spec-options.data-v-2dad6c07 {
+  display: flex;
   flex-wrap: wrap;
+  gap: 20rpx;
 }
-.product-section .spec-selector .spec-item .spec-options .spec-option.data-v-2dad6c07 {
-  padding: 15rpx 30rpx;
-  background: #F5F5F5;
-  border-radius: 8rpx;
-  font-size: 26rpx;
-  color: #666666;
+.spec-option.data-v-2dad6c07 {
+  padding: 16rpx 32rpx;
+  background-color: #f8f8f8;
+  border: 2rpx solid transparent;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  color: #333;
+  transition: all 0.3s;
 }
-.product-section .spec-selector .spec-item .spec-options .spec-option.active.data-v-2dad6c07 {
-  background: #007AFF;
-  color: #ffffff;
+.spec-option.active.data-v-2dad6c07 {
+  background-color: #e8f5e9;
+  border-color: #07c160;
+  color: #07c160;
 }
+.generate-btn.data-v-2dad6c07 {
+  width: 100%;
+  padding: 28rpx;
+  background-color: #07c160;
+  color: #fff;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+.generate-btn.disabled.data-v-2dad6c07 {
+  background-color: #ddd;
+  color: #999;
+}
+
+/* 操作区域 */
 .action-section.data-v-2dad6c07 {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 30rpx 40rpx;
-  background: #ffffff;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+  padding: 20rpx 40rpx;
+  background-color: #fff;
+  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
 }
-.action-section .add-cart-btn.data-v-2dad6c07 {
+.add-cart-btn.data-v-2dad6c07 {
   width: 100%;
-  height: 88rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  border-radius: 44rpx;
-  font-size: 32rpx;
-  font-weight: bold;
+  padding: 28rpx;
+  background-color: #ff6b6b;
+  color: #fff;
   border: none;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  transition: all 0.3s;
 }
-.action-section .add-cart-btn[disabled].data-v-2dad6c07 {
-  background: #CCCCCC;
+.add-cart-btn.disabled.data-v-2dad6c07 {
+  background-color: #ddd;
+  color: #999;
 }

@@ -324,18 +324,44 @@ const handleDelete = () => {
     success: async (res) => {
       if (res.confirm) {
         try {
+          uni.showLoading({
+            title: '删除中...'
+          })
+          
           const deleteRes = await workApi.deleteWork(workId.value)
+          
+          uni.hideLoading()
+          
           if (deleteRes.code === 200) {
             uni.showToast({
               title: '删除成功',
-              icon: 'success'
+              icon: 'success',
+              duration: 1500
             })
             
+            // 通知作品列表页面刷新数据
+            // 使用 getApp().globalData 或 uni.$emit 传递删除事件
+            const app = getApp()
+            if (app && app.globalData) {
+              app.globalData.workDeleted = true
+              app.globalData.deletedWorkId = workId.value
+            }
+            
+            // 延迟返回，确保提示显示
             setTimeout(() => {
-              uni.navigateBack()
+              uni.navigateBack({
+                delta: 1
+              })
             }, 1500)
+          } else {
+            uni.showToast({
+              title: deleteRes.message || '删除失败',
+              icon: 'none'
+            })
           }
         } catch (error) {
+          uni.hideLoading()
+          console.error('删除作品失败', error)
           uni.showToast({
             title: '删除失败',
             icon: 'none'

@@ -151,7 +151,19 @@ const _sfc_main = {
       loadAllCategories();
     });
     common_vendor.onShow(() => {
-      loadAllCategories();
+      const app = getApp();
+      if (app && app.globalData && app.globalData.workDeleted) {
+        const deletedWorkId = app.globalData.deletedWorkId;
+        common_vendor.index.__f__("log", "at pages/works/list.vue:240", "检测到作品被删除，刷新列表", deletedWorkId);
+        if (deletedWorkId) {
+          works.value = works.value.filter((work) => work.id !== deletedWorkId);
+        }
+        loadWorks(true);
+        app.globalData.workDeleted = false;
+        app.globalData.deletedWorkId = null;
+      } else {
+        loadAllCategories();
+      }
     });
     common_vendor.onPullDownRefresh(() => {
       loadWorks(true);

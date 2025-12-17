@@ -120,3 +120,5 @@ so that the functionality remains intact.
 3. **兼容性风险**：Spring Alibaba AI可能不支持所有功能
    - 缓解：评估功能覆盖，必要时保留部分SDK实现
 
+
+

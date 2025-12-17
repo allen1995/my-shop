@@ -225,17 +225,36 @@ const _sfc_main = {
         success: async (res) => {
           if (res.confirm) {
             try {
+              common_vendor.index.showLoading({
+                title: "删除中..."
+              });
               const deleteRes = await api_work.workApi.deleteWork(workId.value);
+              common_vendor.index.hideLoading();
               if (deleteRes.code === 200) {
                 common_vendor.index.showToast({
                   title: "删除成功",
-                  icon: "success"
+                  icon: "success",
+                  duration: 1500
                 });
+                const app = getApp();
+                if (app && app.globalData) {
+                  app.globalData.workDeleted = true;
+                  app.globalData.deletedWorkId = workId.value;
+                }
                 setTimeout(() => {
-                  common_vendor.index.navigateBack();
+                  common_vendor.index.navigateBack({
+                    delta: 1
+                  });
                 }, 1500);
+              } else {
+                common_vendor.index.showToast({
+                  title: deleteRes.message || "删除失败",
+                  icon: "none"
+                });
               }
             } catch (error) {
+              common_vendor.index.hideLoading();
+              common_vendor.index.__f__("error", "at pages/works/detail.vue:364", "删除作品失败", error);
               common_vendor.index.showToast({
                 title: "删除失败",
                 icon: "none"
@@ -300,7 +319,7 @@ const _sfc_main = {
         });
       } catch (error) {
         common_vendor.index.hideLoading();
-        common_vendor.index.__f__("error", "at pages/works/detail.vue:422", "生成海报失败", error);
+        common_vendor.index.__f__("error", "at pages/works/detail.vue:448", "生成海报失败", error);
         common_vendor.index.showToast({
           title: "生成失败",
           icon: "none"
@@ -320,7 +339,7 @@ const _sfc_main = {
         });
         await utils_poster.savePosterToAlbum(posterPath);
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/works/detail.vue:445", "保存海报失败", error);
+        common_vendor.index.__f__("error", "at pages/works/detail.vue:471", "保存海报失败", error);
         common_vendor.index.showToast({
           title: "保存失败",
           icon: "none"

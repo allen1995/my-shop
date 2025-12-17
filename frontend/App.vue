@@ -5,6 +5,10 @@
 
 <script>
 export default {
+  globalData: {
+    workDeleted: false,
+    deletedWorkId: null
+  },
   onLaunch: function() {
     console.log('App Launch')
     // 检查登录状态

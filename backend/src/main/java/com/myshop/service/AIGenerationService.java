@@ -74,15 +74,98 @@ public class AIGenerationService {
     private ImageSynthesisResult generateTextToImage(ImageGenerationTask task) 
             throws NoApiKeyException, ApiException, InputRequiredException {
         ImageSynthesis gen = new ImageSynthesis();
+        
+        // 解析size参数，默认128*128，最大限制150*150
+        String size = parseAndValidateSize(task.getParameters());
+        
         ImageSynthesisParam param = ImageSynthesisParam.builder()
                 .apiKey(apiKey)
                 .model(ImageSynthesis.Models.WANX_V1)
                 .prompt(task.getPrompt())
                 .n(1)
-                .size("1024*1024") // 默认尺寸，可以从parameters中解析
+                .size(size)
                 .build();
         
         return gen.call(param);
+    }
+    
+    /**
+     * 解析并验证size参数
+     * 支持的格式：
+     * 1. 预设尺寸字符串："square"（正方形1024*1024）、"landscape"（横版720*1280）、"portrait"（竖版1280*720）
+     * 2. 直接尺寸字符串："1024*1024"、"720*1280"、"1280*720"
+     * 默认值：1024*1024（正方形）
+     */
+    private String parseAndValidateSize(String parametersJson) {
+        // 预设尺寸
+        final String SQUARE = "1024*1024";      // 正方形
+        final String LANDSCAPE = "720*1280";    // 横版
+        final String PORTRAIT = "1280*720";     // 竖版
+        final String DEFAULT_SIZE = SQUARE;      // 默认正方形
+        
+        // 默认尺寸
+        String size = DEFAULT_SIZE;
+        
+        // 尝试从parameters中解析size
+        if (parametersJson != null && !parametersJson.isEmpty()) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode paramsNode = mapper.readTree(parametersJson);
+                
+                if (paramsNode.has("size")) {
+                    String sizeStr = paramsNode.get("size").asText();
+                    if (sizeStr != null && !sizeStr.trim().isEmpty()) {
+                        sizeStr = sizeStr.trim();
+                        
+                        // 检查是否是预设尺寸
+                        if ("square".equalsIgnoreCase(sizeStr)) {
+                            size = SQUARE;
+                            log.info("使用预设尺寸：正方形 {}", size);
+                        } else if ("landscape".equalsIgnoreCase(sizeStr) || "横版".equals(sizeStr)) {
+                            size = LANDSCAPE;
+                            log.info("使用预设尺寸：横版 {}", size);
+                        } else if ("portrait".equalsIgnoreCase(sizeStr) || "竖版".equals(sizeStr)) {
+                            size = PORTRAIT;
+                            log.info("使用预设尺寸：竖版 {}", size);
+                        } else if (sizeStr.contains("*")) {
+                            // 直接传尺寸字符串，如 "1024*1024"
+                            String[] parts = sizeStr.split("\\*");
+                            if (parts.length == 2) {
+                                try {
+                                    int width = Integer.parseInt(parts[0].trim());
+                                    int height = Integer.parseInt(parts[1].trim());
+                                    
+                                    // 验证尺寸是否合法（只允许预设的三种尺寸）
+                                    String customSize = width + "*" + height;
+                                    if (customSize.equals(SQUARE) || customSize.equals(LANDSCAPE) || customSize.equals(PORTRAIT)) {
+                                        size = customSize;
+                                        log.info("解析size参数: {}", size);
+                                    } else {
+                                        log.warn("size参数 {} 不是支持的尺寸，使用默认值 {}", customSize, DEFAULT_SIZE);
+                                        size = DEFAULT_SIZE;
+                                    }
+                                } catch (NumberFormatException e) {
+                                    log.warn("size参数格式错误: {}，使用默认值 {}", sizeStr, DEFAULT_SIZE, e);
+                                    size = DEFAULT_SIZE;
+                                }
+                            } else {
+                                log.warn("size参数格式错误: {}，使用默认值 {}", sizeStr, DEFAULT_SIZE);
+                                size = DEFAULT_SIZE;
+                            }
+                        } else {
+                            log.warn("size参数格式错误: {}，使用默认值 {}", sizeStr, DEFAULT_SIZE);
+                            size = DEFAULT_SIZE;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("解析size参数失败，使用默认值 {}", DEFAULT_SIZE, e);
+                size = DEFAULT_SIZE;
+            }
+        }
+        
+        log.info("最终使用的size: {}", size);
+        return size;
     }
     
     /**
@@ -261,7 +344,18 @@ public class AIGenerationService {
         }
         
         Object output = result.getOutput();
-        log.info("output类型: {}, 值: {}", output != null ? output.getClass().getName() : "null", output);
+        log.info("output类型: {}", output != null ? output.getClass().getName() : "null");
+        
+        // 输出output的详细信息用于调试
+        if (output != null) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                String outputJson = mapper.writeValueAsString(output);
+                log.info("output的JSON表示: {}", outputJson);
+            } catch (Exception e) {
+                log.warn("无法将output转为JSON", e);
+            }
+        }
         
         if (output == null && imageUrl == null) {
             // 尝试直接访问result的其他方法
@@ -369,7 +463,70 @@ public class AIGenerationService {
                 }
             }
             
-            // 方式3：尝试将output转为JSON字符串，然后解析
+            // 方式3：尝试使用getOutput().getResults()方法（标准SDK方式）
+            if (imageUrl == null && output != null) {
+                try {
+                    // 尝试调用getResults()方法（直接在output上调用）
+                    java.lang.reflect.Method getResultsMethod = output.getClass().getMethod("getResults");
+                    Object resultsObj = getResultsMethod.invoke(output);
+                    log.info("getResults()返回类型: {}", resultsObj != null ? resultsObj.getClass().getName() : "null");
+                    
+                    if (resultsObj instanceof java.util.List) {
+                        @SuppressWarnings("unchecked")
+                        java.util.List<Object> results = (java.util.List<Object>) resultsObj;
+                        log.info("results列表大小: {}", results.size());
+                        if (!results.isEmpty()) {
+                            Object firstResult = results.get(0);
+                            log.info("第一个result类型: {}", firstResult != null ? firstResult.getClass().getName() : "null");
+                            
+                            // 尝试调用getUrl()方法
+                            try {
+                                java.lang.reflect.Method getUrlMethod = firstResult.getClass().getMethod("getUrl");
+                                Object urlObj = getUrlMethod.invoke(firstResult);
+                                if (urlObj != null) {
+                                    imageUrl = urlObj.toString();
+                                    log.info("通过getOutput().getResults()[0].getUrl()获取到URL: {}", imageUrl);
+                                }
+                            } catch (NoSuchMethodException e) {
+                                // 如果没有getUrl方法，尝试所有可能的方法
+                                log.warn("没有getUrl方法，尝试其他方法");
+                                try {
+                                    java.lang.reflect.Method[] methods = firstResult.getClass().getMethods();
+                                    for (java.lang.reflect.Method method : methods) {
+                                        String methodName = method.getName().toLowerCase();
+                                        if ((methodName.contains("url") || methodName.contains("image")) 
+                                            && method.getParameterCount() == 0) {
+                                            try {
+                                                Object value = method.invoke(firstResult);
+                                                if (value != null) {
+                                                    String urlStr = value.toString();
+                                                    if (urlStr.startsWith("http://") || urlStr.startsWith("https://")) {
+                                                        imageUrl = urlStr;
+                                                        log.info("通过方法 {} 获取到URL: {}", method.getName(), imageUrl);
+                                                        break;
+                                                    }
+                                                }
+                                            } catch (Exception ex) {
+                                                // 忽略
+                                            }
+                                        }
+                                    }
+                                } catch (Exception ex) {
+                                    log.warn("尝试其他方法获取URL失败", ex);
+                                }
+                            } catch (Exception e) {
+                                log.warn("调用getUrl方法失败", e);
+                            }
+                        }
+                    }
+                } catch (NoSuchMethodException e) {
+                    log.warn("output没有getResults()方法", e);
+                } catch (Exception e) {
+                    log.warn("通过getOutput().getResults()获取URL失败", e);
+                }
+            }
+            
+            // 方式4：尝试将output转为JSON字符串，然后解析
             if (imageUrl == null) {
                 try {
                     ObjectMapper mapper = new ObjectMapper();
@@ -380,14 +537,48 @@ public class AIGenerationService {
                     JsonNode jsonNode = mapper.readTree(jsonStr);
                     if (jsonNode.has("url")) {
                         imageUrl = jsonNode.get("url").asText();
+                        log.info("从JSON中提取到url字段: {}", imageUrl);
                     } else if (jsonNode.has("results") && jsonNode.get("results").isArray() && jsonNode.get("results").size() > 0) {
                         JsonNode firstResult = jsonNode.get("results").get(0);
                         if (firstResult.has("url")) {
                             imageUrl = firstResult.get("url").asText();
+                            log.info("从JSON results[0]中提取到url字段: {}", imageUrl);
                         }
                     }
                 } catch (Exception e) {
                     log.warn("JSON解析失败", e);
+                }
+            }
+            
+            // 方式5：尝试将整个result转为JSON字符串，然后解析
+            if (imageUrl == null) {
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    String jsonStr = mapper.writeValueAsString(result);
+                    log.info("result的完整JSON表示: {}", jsonStr);
+                    
+                    JsonNode jsonNode = mapper.readTree(jsonStr);
+                    // 尝试多种路径
+                    if (jsonNode.has("output")) {
+                        JsonNode outputNode = jsonNode.get("output");
+                        if (outputNode.has("url")) {
+                            imageUrl = outputNode.get("url").asText();
+                            log.info("从result.output.url提取到URL: {}", imageUrl);
+                        } else if (outputNode.has("results") && outputNode.get("results").isArray() && outputNode.get("results").size() > 0) {
+                            JsonNode firstResult = outputNode.get("results").get(0);
+                            if (firstResult.has("url")) {
+                                imageUrl = firstResult.get("url").asText();
+                                log.info("从result.output.results[0].url提取到URL: {}", imageUrl);
+                            }
+                        }
+                    }
+                    // 尝试直接获取url
+                    if (imageUrl == null && jsonNode.has("url")) {
+                        imageUrl = jsonNode.get("url").asText();
+                        log.info("从result.url提取到URL: {}", imageUrl);
+                    }
+                } catch (Exception e) {
+                    log.warn("将result转为JSON解析失败", e);
                 }
             }
             
@@ -401,7 +592,14 @@ public class AIGenerationService {
         
         if (imageUrl == null || imageUrl.isEmpty()) {
             // 输出完整的result信息用于调试
-            log.error("无法从生成结果中获取图片URL，result完整信息: {}", result);
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                String resultJson = mapper.writeValueAsString(result);
+                log.error("无法从生成结果中获取图片URL，result完整JSON: {}", resultJson);
+            } catch (Exception e) {
+                log.error("无法序列化result为JSON", e);
+                log.error("result toString: {}", result.toString());
+            }
             throw new RuntimeException("无法从生成结果中获取图片URL。请检查日志查看result的详细结构。");
         }
         
