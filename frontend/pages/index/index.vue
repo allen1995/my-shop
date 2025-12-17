@@ -35,7 +35,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { workApi } from '@/api/work'
 
 const hotWorks = ref([])
@@ -64,16 +65,22 @@ const goToWorkDetail = (workId) => {
   })
 }
 
-onMounted(async () => {
-  // 加载热门作品
+const loadHotWorks = async () => {
   try {
     const res = await workApi.getWorks({ page: 0, size: 6 })
     if (res.code === 200) {
       hotWorks.value = res.data.content || []
+      console.log('热门作品已刷新:', hotWorks.value.length)
     }
   } catch (error) {
     console.error('加载热门作品失败', error)
   }
+}
+
+// 使用 onShow 确保每次显示页面时都刷新数据
+onShow(() => {
+  console.log('主页显示，刷新热门作品')
+  loadHotWorks()
 })
 </script>
 

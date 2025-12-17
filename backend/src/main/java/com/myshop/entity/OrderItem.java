@@ -36,7 +36,10 @@ public class OrderItem {
     private BigDecimal price;
     
     @Column(length = 500)
-    private String previewImageUrl;
+    private String workImageUrl;  // 印花图URL
+    
+    @Column(length = 500)
+    private String previewImageUrl;  // 预览图URL（印花+包包合成图）
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", insertable = false, updatable = false)

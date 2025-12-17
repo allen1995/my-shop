@@ -26,15 +26,20 @@ const _sfc_main = {
         url: `/pages/works/detail?id=${workId}`
       });
     };
-    common_vendor.onMounted(async () => {
+    const loadHotWorks = async () => {
       try {
         const res = await api_work.workApi.getWorks({ page: 0, size: 6 });
         if (res.code === 200) {
           hotWorks.value = res.data.content || [];
+          common_vendor.index.__f__("log", "at pages/index/index.vue:73", "热门作品已刷新:", hotWorks.value.length);
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:75", "加载热门作品失败", error);
+        common_vendor.index.__f__("error", "at pages/index/index.vue:76", "加载热门作品失败", error);
       }
+    };
+    common_vendor.onShow(() => {
+      common_vendor.index.__f__("log", "at pages/index/index.vue:82", "主页显示，刷新热门作品");
+      loadHotWorks();
     });
     return (_ctx, _cache) => {
       return {

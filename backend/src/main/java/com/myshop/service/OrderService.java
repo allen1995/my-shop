@@ -64,7 +64,8 @@ public class OrderService {
             orderItem.setSize(cartItem.getSize());
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setPrice(product.getBasePrice());
-            orderItem.setPreviewImageUrl(cartItem.getPreviewImageUrl());
+            orderItem.setWorkImageUrl(cartItem.getWorkImageUrl());  // 印花图URL
+            orderItem.setPreviewImageUrl(cartItem.getPreviewImageUrl());  // 预览图URL
             
             totalAmount = totalAmount.add(product.getBasePrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
             orderItems.add(orderItem);

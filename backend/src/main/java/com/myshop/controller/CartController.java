@@ -3,8 +3,10 @@ package com.myshop.controller;
 import com.myshop.dto.ApiResponse;
 import com.myshop.entity.CartItem;
 import com.myshop.entity.Product;
+import com.myshop.entity.Work;
 import com.myshop.repository.CartItemRepository;
 import com.myshop.repository.ProductRepository;
+import com.myshop.repository.WorkRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class CartController {
     
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
+    private final WorkRepository workRepository;
     
     @Data
     public static class CartItemDTO {
@@ -33,7 +36,8 @@ public class CartController {
         private String color;
         private String size;
         private Integer quantity;
-        private String previewImageUrl;
+        private String workImageUrl;  // 印花图URL
+        private String previewImageUrl;  // 预览图URL
         private BigDecimal price; // 商品价格
         private String productName; // 商品名称
     }
@@ -57,6 +61,13 @@ public class CartController {
                     Integer.valueOf(request.get("quantity").toString()) : 1;
             String previewImageUrl = (String) request.get("previewImageUrl");
             
+            // 获取印花图URL
+            String workImageUrl = null;
+            Work work = workRepository.findById(workId).orElse(null);
+            if (work != null) {
+                workImageUrl = work.getImageUrl();
+            }
+            
             // 检查是否已存在相同的购物车项
             CartItem existingItem = cartItemRepository
                     .findByUserIdAndWorkIdAndProductIdAndColorAndSize(userId, workId, productId, color, size)
@@ -65,6 +76,9 @@ public class CartController {
             CartItem cartItem;
             if (existingItem != null) {
                 existingItem.setQuantity(existingItem.getQuantity() + quantity);
+                // 更新图片URL（可能已更新）
+                existingItem.setWorkImageUrl(workImageUrl);
+                existingItem.setPreviewImageUrl(previewImageUrl);
                 cartItem = cartItemRepository.save(existingItem);
             } else {
                 cartItem = new CartItem();
@@ -74,6 +88,7 @@ public class CartController {
                 cartItem.setColor(color);
                 cartItem.setSize(size);
                 cartItem.setQuantity(quantity);
+                cartItem.setWorkImageUrl(workImageUrl);
                 cartItem.setPreviewImageUrl(previewImageUrl);
                 cartItem = cartItemRepository.save(cartItem);
             }
@@ -87,6 +102,7 @@ public class CartController {
             dto.setColor(cartItem.getColor());
             dto.setSize(cartItem.getSize());
             dto.setQuantity(cartItem.getQuantity());
+            dto.setWorkImageUrl(cartItem.getWorkImageUrl());
             dto.setPreviewImageUrl(cartItem.getPreviewImageUrl());
             
             // 查询商品信息
@@ -125,6 +141,7 @@ public class CartController {
                 dto.setColor(item.getColor());
                 dto.setSize(item.getSize());
                 dto.setQuantity(item.getQuantity());
+                dto.setWorkImageUrl(item.getWorkImageUrl());
                 dto.setPreviewImageUrl(item.getPreviewImageUrl());
                 
                 // 查询商品信息

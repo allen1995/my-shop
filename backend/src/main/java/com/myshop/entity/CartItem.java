@@ -32,7 +32,10 @@ public class CartItem {
     private Integer quantity = 1;
     
     @Column(length = 500)
-    private String previewImageUrl;
+    private String workImageUrl;  // 印花图URL
+    
+    @Column(length = 500)
+    private String previewImageUrl;  // 预览图URL（印花+包包合成图）
     
     @Column(nullable = false, updatable = false)
     private LocalDateTime createTime;

@@ -356,15 +356,41 @@ const pollTaskStatus = async () => {
 
 // 重新生成
 const handleRegenerate = () => {
+  console.log('重新生成预览')
+  
+  // 清除定时器
+  if (pollingTimer.value) {
+    clearTimeout(pollingTimer.value)
+    pollingTimer.value = null
+  }
+  
+  // 重置所有状态
   previewUrl.value = ''
   taskId.value = null
   errorMessage.value = ''
+  isGenerating.value = false
+  
+  // 重新生成
   handleGeneratePreview()
 }
 
-// 重试
+// 重试（失败后重试）
 const handleRetry = () => {
+  console.log('重试生成预览')
+  
+  // 清除定时器
+  if (pollingTimer.value) {
+    clearTimeout(pollingTimer.value)
+    pollingTimer.value = null
+  }
+  
+  // 重置状态
+  previewUrl.value = ''
+  taskId.value = null  // ✅ 重要：清除旧的任务ID
   errorMessage.value = ''
+  isGenerating.value = false
+  
+  // 重新生成（会创建新任务）
   handleGeneratePreview()
 }
 
@@ -385,7 +411,7 @@ const handleAddToCart = async () => {
       color: selectedColor.value,
       size: selectedSize.value,
       quantity: 1,
-      previewImageUrl: previewUrl.value  // 使用预览图片
+      previewImageUrl: previewUrl.value
     })
     
     uni.hideLoading()

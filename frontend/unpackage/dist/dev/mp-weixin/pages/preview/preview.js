@@ -186,13 +186,27 @@ const _sfc_main = {
       }
     };
     const handleRegenerate = () => {
+      common_vendor.index.__f__("log", "at pages/preview/preview.vue:359", "重新生成预览");
+      if (pollingTimer.value) {
+        clearTimeout(pollingTimer.value);
+        pollingTimer.value = null;
+      }
       previewUrl.value = "";
       taskId.value = null;
       errorMessage.value = "";
+      isGenerating.value = false;
       handleGeneratePreview();
     };
     const handleRetry = () => {
+      common_vendor.index.__f__("log", "at pages/preview/preview.vue:379", "重试生成预览");
+      if (pollingTimer.value) {
+        clearTimeout(pollingTimer.value);
+        pollingTimer.value = null;
+      }
+      previewUrl.value = "";
+      taskId.value = null;
       errorMessage.value = "";
+      isGenerating.value = false;
       handleGeneratePreview();
     };
     const handleAddToCart = async () => {
@@ -210,7 +224,6 @@ const _sfc_main = {
           size: selectedSize.value,
           quantity: 1,
           previewImageUrl: previewUrl.value
-          // 使用预览图片
         });
         common_vendor.index.hideLoading();
         if (res.code === 200) {
@@ -228,7 +241,7 @@ const _sfc_main = {
           throw new Error(res.message || "加入购物车失败");
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/preview/preview.vue:410", "加入购物车失败:", error);
+        common_vendor.index.__f__("error", "at pages/preview/preview.vue:436", "加入购物车失败:", error);
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
           title: error.message || "加入购物车失败",
